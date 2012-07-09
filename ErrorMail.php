@@ -162,7 +162,7 @@ class ErrorMail
     {
         $error = error_get_last();
         if ($error && isset(self::$fatalErrors[$error['type']]))
-            self::handler($error['type'], $error['message'], $error['file'], $error['line'], NULL);
+            self::handler($error['type'], $error['message'], $error['file'], $error['line'], NULL, true);
         return true;
     }
 
