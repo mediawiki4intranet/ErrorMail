@@ -99,7 +99,7 @@ class ErrorMail
                 $errtype = $errno;
             else
                 $errtype = self::$errorTypes[$errno];
-            $username = $wgUser->getName();
+            $username = $wgUser ? $wgUser->getName() : '';
             $subject = "[$wgSitename] $errtype".($wgTitle ? " at $wgTitle" : '');
             $text = date("[Y-m-d H:i:s] ").$wgSitename.', ';
             $text .= 'Title: '.($wgTitle ? $wgTitle : '-')."\n";
