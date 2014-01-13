@@ -79,7 +79,7 @@ class ErrorMail
      */
     static function handler($errno, $errstr, $errfile, $errline, $errcontext, $nostack = false)
     {
-        global $wgUser, $wgServer, $wgSitename, $wgTitle, $IP;
+        global $wgUser, $wgServer, $wgSitename, $wgTitle, $IP, $wgRequest;
         global $wgPasswordSender, $wgPasswordSenderName;
         global $wgSuppressCount;
         global $wgErrorMail, $wgErrorMailLog, $wgErrorMailLevels, $wgErrorMailExceptions;
@@ -96,14 +96,30 @@ class ErrorMail
         {
             self::$inProgress = true;
             if (!isset(self::$errorTypes[$errno]))
+            {
                 $errtype = $errno;
+            }
             else
+            {
                 $errtype = self::$errorTypes[$errno];
+            }
+            if ($wgRequest)
+            {
+                $addr = $wgRequest->getIP();
+            }
+            else
+            {
+                $addr = $_SERVER['REMOTE_ADDR'];
+                if (isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+                {
+                    $addr .= ', forwarded for '.$_SERVER['HTTP_X_FORWARDED_FOR'];
+                }
+            }
             $username = $wgUser ? $wgUser->getName() : '';
             $subject = "[$wgSitename] $errtype".($wgTitle ? " at $wgTitle" : '');
             $text = date("[Y-m-d H:i:s] ").$wgSitename.', ';
             $text .= 'Title: '.($wgTitle ? $wgTitle : '-')."\n";
-            $text .= "User: $username, IP: ".wfGetIP()."\n\n";
+            $text .= "User: $username, IP: $addr\n\n";
             if ($errno != 'exception')
             {
                 // Exception message already includes this information
