@@ -142,7 +142,10 @@ class ErrorMail
                 $text .= "\n";
             }
             // Request details
-            $text .= "URL: $wgServer".$_SERVER['REQUEST_URI']."\n";
+            if (isset($_SERVER['REQUEST_URI']))
+            {
+                $text .= "URL: $wgServer".$_SERVER['REQUEST_URI']."\n";
+            }
             $text .= "\n\$_GET = ".var_export($_GET, true).
                 "\n\$_POST = ".var_export($_POST, true).
                 "\n\$_COOKIE = ".var_export($_COOKIE, true)."\n";
